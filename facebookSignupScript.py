@@ -30,8 +30,8 @@ from selenium.common.exceptions import TimeoutException
 
 # variables
 facebook_signup_url = "https://facebook.com/signup"
-image_folder_directory = ""
-image_file_paths = [os.path.join(image_folder_directory, filepath) for filepath in os.listdir(image_folder_directory) if os.path.isfile(os.path.join(image_folder_directory, filepath))]
+# image_folder_directory = ""
+# image_file_paths = [os.path.join(image_folder_directory, filepath) for filepath in os.listdir(image_folder_directory) if os.path.isfile(os.path.join(image_folder_directory, filepath))]
 client_1 = SMSNator()
 client_2 = EmailNator()
 
@@ -341,7 +341,7 @@ def main():
             if 'Upload a verification selfie' in page_source:
                 # upload a selfie or get it from a google search?
                 upload_button = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[2]/div/div/div/div/div/div/div/div/div/div")
-                upload_button.send_keys(random.choice(image_file_paths))
+                # upload_button.send_keys(random.choice(image_file_paths))
                 press_continue = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[4]/div/div/div/div/div[1]/div/span/span')
                 press_continue.click()
 
@@ -366,7 +366,19 @@ def main():
         #     except Exception:
         #         break
 
-                time.sleep(600)
+        else:
+            while True:
+                try:
+                    code = get_code_by_email(email)
+                    code_area = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[2]/div/label/div/div/input")
+                    code_area.send_keys(code)
+                    time.sleep(2)
+                    break
+                except Exception as e:
+                    print(e)
+
+            press_continue = driver.find_element(By.NAME, "confirm").click() # only if the code is asked for without a captcha
+            time.sleep(600)
         driver.quit()
 
 if __name__ == '__main__':
